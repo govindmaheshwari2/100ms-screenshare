@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:test/meeting.dart';
 
 void main() {
@@ -33,6 +36,28 @@ class _HomePageState extends State<HomePage> {
   TextEditingController txtName = TextEditingController(text: "gg");
   TextEditingController txtId = TextEditingController(
       text: "https://yogi.app.100ms.live/preview/ssz-eqr-eaa");
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getPermissions();
+    super.initState();
+  }
+
+  Future<bool> getPermissions() async {
+    if (Platform.isIOS) return true;
+    await Permission.camera.request();
+    await Permission.microphone.request();
+
+    while ((await Permission.camera.isDenied)) {
+      await Permission.camera.request();
+    }
+    while ((await Permission.microphone.isDenied)) {
+      await Permission.microphone.request();
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
